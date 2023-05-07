@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.PrintStream;
@@ -7,24 +8,41 @@ import java.util.Scanner;
 public class NoneChain {
     //создаем массив, в который будем принимать добытые блоки
     public static ArrayList<Block> blockchain = new ArrayList<Block>();
-    public static int difficulty = 5;
+    public static PrintStream out = System.out;
+    public static Scanner in = new Scanner(System.in);
+    public static int difficulty = 4;
 
     public static void main(String[] args) {
 
-        System.out.println("Trying to Mine block 1... ");
-        addBlock(new Block("Hi im the first block", "0"));
+        out.println("Введите сообщение транзакции");
+        String data_msg = in.nextLine();
+        out.println("Trying to Mine block " + 1 + "...");
+        addBlock(new Block(data_msg, "0"), difficulty);
+        int i = 1;
+        while(in.hasNextLine()) {
+//            difficulty++;
+            i++;
+            data_msg = in.nextLine();
+            out.println("Trying to Mine block " + i + "...");
+            addBlock(new Block(data_msg, blockchain.get(blockchain.size() - 1).hash), difficulty);
+            out.println(difficulty);
+        }
 
-        System.out.println("Trying to Mine block 2... ");
-        addBlock(new Block("Yo im the second block",blockchain.get(blockchain.size()-1).hash));
+        Scan scan = new Scan();
+        scan.scanner();
 
-        System.out.println("Trying to Mine block 3... ");
-        addBlock(new Block("Hey im the third block",blockchain.get(blockchain.size()-1).hash));
 
-        System.out.println("\nBlockchain is Valid: " + isChainValid());
 
-        String blockchainJson = StringUtil.getJson(blockchain);
-        System.out.println("\nThe block chain: ");
-        System.out.println(blockchainJson);
+//        System.out.println("Trying to Mine block 1... ");
+//        addBlock(new Block("Hi im the first block", "0"));
+//
+//        System.out.println("Trying to Mine block 2... ");
+//        addBlock(new Block("Yo im the second block",blockchain.get(blockchain.size()-1).hash));
+//
+//        System.out.println("Trying to Mine block 3... ");
+//        addBlock(new Block("Hey im the third block",blockchain.get(blockchain.size()-1).hash));
+
+
     }
 
     public static Boolean isChainValid() {
@@ -52,8 +70,8 @@ public class NoneChain {
         return true;
     }
 
-    public static void addBlock(Block newBlock) {
-        newBlock.mineBlock(difficulty);
+    public static void addBlock(Block newBlock, int difficult) {
+        newBlock.mineBlock(difficult);
         blockchain.add(newBlock);
     }
 }
